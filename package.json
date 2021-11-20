@@ -20,7 +20,7 @@
   "dependencies": {
     "b4a": "^1.1.0",
     "nanoassert": "^2.0.0",
-    "sodium-universal": "^3.0.4"
+    "sodium-universal": "lukeburns/sodium-universal#ristretto"
   },
   "devDependencies": {
     "noise-handshake": "^1.1.0",

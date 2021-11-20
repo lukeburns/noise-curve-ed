@@ -3,10 +3,10 @@ const sodium = require('sodium-universal')
 const assert = require('nanoassert')
 const b4a = require('b4a')
 
-const DHLEN = sodium.crypto_scalarmult_ed25519_BYTES
-const PKLEN = sodium.crypto_scalarmult_ed25519_BYTES
-const SKLEN = sodium.crypto_sign_SECRETKEYBYTES
-const ALG = 'Ed25519'
+const DHLEN = sodium.crypto_core_ristretto255_BYTES
+const PKLEN = sodium.crypto_core_ristretto255_BYTES
+const SKLEN = sodium.crypto_core_ristretto255_SCALARBYTES
+const ALG = 'ristretto255'
 
 module.exports = {
   DHLEN,
@@ -18,24 +18,17 @@ module.exports = {
   dh
 }
 
-function generateKeyPair (privKey) {
-  if (privKey) return generateSeedKeyPair(privKey.subarray(0, 32))
-
-  const keyPair = {}
-  keyPair.secretKey = b4a.alloc(SKLEN)
-  keyPair.publicKey = b4a.alloc(PKLEN)
-
-  sodium.crypto_sign_keypair(keyPair.publicKey, keyPair.secretKey)
-  return keyPair
-}
-
-function generateSeedKeyPair (seed) {
-  const keyPair = {}
-  keyPair.secretKey = b4a.alloc(SKLEN)
-  keyPair.publicKey = b4a.alloc(PKLEN)
-
-  sodium.crypto_sign_seed_keypair(keyPair.publicKey, keyPair.secretKey, seed)
-  return keyPair
+function generateKeyPair (sk) {
+  if (!sk) {
+    sk = b4a.alloc(SKLEN)
+    sodium.crypto_core_ristretto255_scalar_random(sk)
+  }
+  const pk = b4a.alloc(PKLEN)
+  sodium.crypto_scalarmult_ristretto255_base(pk, sk)
+  return {
+    publicKey: pk,
+    secretKey: sk
+  }
 }
 
 function dh (pk, lsk) {
@@ -44,16 +37,9 @@ function dh (pk, lsk) {
 
   const output = b4a.alloc(DHLEN)
 
-  // libsodium stores seed not actual scalar
-  const sk = b4a.alloc(64)
-  sodium.crypto_hash_sha512(sk, lsk.subarray(0, 32))
-  sk[0] &= 248
-  sk[31] &= 127
-  sk[31] |= 64
-
-  sodium.crypto_scalarmult_ed25519(
+  sodium.crypto_scalarmult_ristretto255(
     output,
-    sk.subarray(0, 32),
+    lsk,
     pk
   )
 
