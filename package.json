@@ -1,14 +1,11 @@
 {
-  "name": "noise-curve-ed",
-  "version": "2.1.0",
-  "description": "Ed25519 elliptic curve operations for [`noise-handshake`](https://github.com/chm-diederichs/noise-handshake)",
+  "name": "noise-curve-red",
+  "version": "1.0.0",
+  "description": "Ristretto-based ed25519 elliptic curve operations",
   "main": "index.js",
   "scripts": {
+    "format": "standard --fix",
     "test": "npx standard && tape test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chm-diederichs/noise-curve-ed.git"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +17,7 @@
   "dependencies": {
     "b4a": "^1.1.0",
     "nanoassert": "^2.0.0",
-    "sodium-universal": "^5.0.0"
+    "red25519": "^0.4.0"
   },
   "devDependencies": {
     "noise-handshake": "^3.0.0",
