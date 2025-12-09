@@ -1,5 +1,5 @@
 {
-  "name": "noise-curve-red",
+  "name": "noise-curve-ed",
   "version": "1.0.0",
   "description": "Ristretto-based ed25519 elliptic curve operations",
   "main": "index.js",
